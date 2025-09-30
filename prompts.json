@@ -1,0 +1,32 @@
+{
+  "prompts": [
+    {
+      "id": "Criteria",
+      "images": [],
+      "text": "You will be presented with a series of images containing a segment of the trajectory of a robot performing the task <the robot arm picks up a cup>. The trajectory segment contains 5 time steps of visual observations, each with 2 more history frames to form 5 actions with 3 frames of each action. Please first generate a set of criterias for judging the task <the robot arm picks up a cup> as different rate categories: <Good, Average, Bad>. where: Bad: The task is not completed. Average: The task is partially completed, or you believe the transition is critical for achieving the goal, such as the target object appear in the agent's view, but falls short of completion. Good: The task is completed.",
+      "max_new_tokens": 1000
+    },
+    {
+      "id": "Description",
+      "images": [
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05A.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05B.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05C.jpg"
+      ],
+      "text": "Now you are given these 3 frames representing the first action, please describe in these 3 frames, what is the robot doing.",
+      "max_new_tokens": 1000
+    },
+    {
+      "id": "Description wrt task criteria",
+      "images": [],
+      "text": "Based on the criteria and the description you generated, generate analysis of what the robot is doing with respect to the task <the robot arm picks up a cup>.",
+      "max_new_tokens": 1000
+    },
+    {
+      "id": "Rating",
+      "images": [],
+      "text": "From the above analyses for the action with respect to the task <the robot arm picks up a cup>, based on this rating category: <Good, Average, Bad>. How would you rate this action? Please reply with a category.",
+      "max_new_tokens": 1000
+    }
+  ]
+}
