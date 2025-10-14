@@ -11,7 +11,7 @@ from qwen_vl_utils import process_vision_info
 # ============================================================
 MODEL_PATH = "/home/hliu852/Qwen2.5-VL-7B-Instruct"
 PROMPTS_FILE = "prompts.json"  # Input file with your prompts
-OUTPUT_FILE = "mug5.json"  # Output file to store conversations
+OUTPUT_FILE = "mug-5000-whole/mug.json"  # Output file to store conversations
 
 # ============================================================
 # Load Model and Processor
