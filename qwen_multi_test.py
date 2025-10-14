@@ -1,5 +1,6 @@
 import torch
 import json
+import time
 from pathlib import Path
 from datetime import datetime
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
@@ -81,7 +82,6 @@ def save_conversation(conversation, output_file):
     
     print(f"Conversation saved to {output_file}")
 
-
 def query_model(messages, max_new_tokens=256):
     """
     Query the model with a conversation history
@@ -109,10 +109,22 @@ def query_model(messages, max_new_tokens=256):
         return_tensors="pt"
     ).to(device)
     
+    # --- Start of Change ---
+    # Start timer
+    start_time = time.perf_counter()
+    # --- End of Change ---
+
     # Generate
     with torch.inference_mode():
         generated_ids = model.generate(**inputs, max_new_tokens=max_new_tokens)
     
+    # --- Start of Change ---
+    # End timer
+    end_time = time.perf_counter()
+    latency = end_time - start_time
+    print(f"Model generation latency: {latency:.4f} seconds")
+    # --- End of Change ---
+
     # Trim and decode
     generated_ids_trimmed = [
         out_ids[len(in_ids):] 
@@ -126,7 +138,6 @@ def query_model(messages, max_new_tokens=256):
     )
     
     return output_text[0]
-
 
 def process_prompts_sequence(prompts_list):
     """
