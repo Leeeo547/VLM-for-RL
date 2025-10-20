@@ -3,7 +3,7 @@ import json
 import time
 from pathlib import Path
 from datetime import datetime
-from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
+from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor, BitsAndBytesConfig
 from qwen_vl_utils import process_vision_info
 
 # ============================================================
@@ -11,7 +11,15 @@ from qwen_vl_utils import process_vision_info
 # ============================================================
 MODEL_PATH = "/home/hliu852/Qwen2.5-VL-7B-Instruct"
 PROMPTS_FILE = "prompts.json"  # Input file with your prompts
-OUTPUT_FILE = "mug-5000-whole/mug.json"  # Output file to store conversations
+OUTPUT_FILE = "mug-5000-whole/mug-revised.json"  # Output file to store conversations
+
+# ============================================================
+# Quantization Configuration for 8-bit
+# ============================================================
+print("Creating quantization configuration...")
+bnb_config = BitsAndBytesConfig(
+    load_in_8bit=True
+)
 
 # ============================================================
 # Load Model and Processor
@@ -22,10 +30,12 @@ print(f"Using device: {device}")
 
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     MODEL_PATH,
-    dtype="auto",
+    dtype=torch.bfloat16,
     device_map="auto",
     local_files_only=True,
-    trust_remote_code=True
+    trust_remote_code=True,
+    # Add quantization_config here
+    quantization_config=bnb_config
 )
 processor = AutoProcessor.from_pretrained(
     MODEL_PATH,
@@ -109,21 +119,21 @@ def query_model(messages, max_new_tokens=256):
         return_tensors="pt"
     ).to(device)
     
-    # --- Start of Change ---
-    # Start timer
-    start_time = time.perf_counter()
-    # --- End of Change ---
+    # # --- Start of Change ---
+    # # Start timer
+    # start_time = time.perf_counter()
+    # # --- End of Change ---
 
     # Generate
     with torch.inference_mode():
         generated_ids = model.generate(**inputs, max_new_tokens=max_new_tokens)
     
-    # --- Start of Change ---
-    # End timer
-    end_time = time.perf_counter()
-    latency = end_time - start_time
-    print(f"Model generation latency: {latency:.4f} seconds")
-    # --- End of Change ---
+    # # --- Start of Change ---
+    # # End timer
+    # end_time = time.perf_counter()
+    # latency = end_time - start_time
+    # print(f"Model generation latency: {latency:.4f} seconds")
+    # # --- End of Change ---
 
     # Trim and decode
     generated_ids_trimmed = [
@@ -303,6 +313,10 @@ if __name__ == "__main__":
     print("2. Independent (each prompt is separate)")
     mode = input("Enter mode (1 or 2, default=1): ").strip() or "1"
     
+    # --- Start of Change (Add overall timer) ---
+    overall_start_time = time.perf_counter()
+    # --- End of Change ---
+
     if mode == "1":
         # Process prompts in sequence (conversation context maintained)
         conversation = process_prompts_sequence(prompts)
@@ -329,6 +343,12 @@ if __name__ == "__main__":
         
         print(f"\nAll conversations saved to {OUTPUT_FILE}")
     
+    # --- Start of Change (Calculate and print overall latency) ---
+    overall_end_time = time.perf_counter()
+    total_latency = overall_end_time - overall_start_time
+    print(f"\nTotal generation and processing time for {len(prompts)} prompts: {total_latency:.4f} seconds")
+    # --- End of Change ---
+
     print("\n" + "="*60)
     print("Processing complete!")
     print("="*60)
