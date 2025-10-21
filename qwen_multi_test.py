@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor, BitsAndBytesConfig
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 from qwen_vl_utils import process_vision_info
 
 # ============================================================
@@ -28,21 +29,34 @@ print("Loading model and processor...")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using device: {device}")
 
-model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    MODEL_PATH,
+# model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+#     MODEL_PATH,
+#     dtype=torch.bfloat16,
+#     device_map="auto",
+#     local_files_only=True,
+#     trust_remote_code=True,
+#     # Add quantization_config here
+#     quantization_config=bnb_config
+# )
+# processor = AutoProcessor.from_pretrained(
+#     MODEL_PATH,
+#     local_files_only=True,
+#     trust_remote_code=True
+# )
+# print("Qwen2.5 VL Insturct 7B loaded successfully!\n")
+
+# We recommend enabling flash_attention_2 for better acceleration and memory saving, especially in multi-image and video scenarios.
+model = Qwen3VLForConditionalGeneration.from_pretrained(
+    "Qwen/Qwen3-VL-8B-Thinking",
     dtype=torch.bfloat16,
+    # attn_implementation="flash_attention_2",
     device_map="auto",
-    local_files_only=True,
-    trust_remote_code=True,
-    # Add quantization_config here
     quantization_config=bnb_config
 )
-processor = AutoProcessor.from_pretrained(
-    MODEL_PATH,
-    local_files_only=True,
-    trust_remote_code=True
-)
-print("Model loaded successfully!\n")
+processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-8B-Thinking")
+
+print("Qwen3 VL Thinking 8B loaded successfully!\n")
+
 
 # ============================================================
 # Helper Functions
