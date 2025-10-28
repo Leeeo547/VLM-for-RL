@@ -4,7 +4,7 @@
       "id": "Criteria",
       "images": [],
       "text": "You will be presented with a series of images containing a segment of the trajectory of a robot performing the task <the robot arm picks up a cup>. The trajectory segment contains 5 time steps of visual observations, each with 2 more history frames to form 5 actions with 3 frames of each action. Please first generate a set of criterias for judging the task <the robot arm picks up a cup> as different rate categories: <Good, Average, Bad>. where: Bad: The task is not completed. Average: The task is partially completed, or you believe the transition is critical for achieving the goal, such as the target object appear in the agent's view, but falls short of completion. Good: The task is completed.",
-      "max_new_tokens": 3000
+      "max_new_tokens": 650
     },
     {
       "id": "Description-1",
@@ -14,19 +14,19 @@
         "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/01C.jpg"
       ],
       "text": "Now you are given these 3 frames representing the first action, please describe in these 3 frames, what is the robot doing.",
-      "max_new_tokens": 4000
+      "max_new_tokens": 1000
     },
     {
       "id": "Description wrt task criteria-1",
       "images": [],
       "text": "Based on the criteria and the description you generated, generate analysis of what the robot is doing with respect to the task <the robot arm picks up a cup>.",
-      "max_new_tokens": 2000
+      "max_new_tokens": 500
     },
     {
       "id": "Rating-1",
       "images": [],
       "text": "From the above analyses for the action with respect to the task <the robot arm picks up a cup>, based on this rating category: <Good, Average, Bad>. How would you rate this action? Please reply with a category.",
-      "max_new_tokens": 1000
+      "max_new_tokens": 400
     },
 
     {
@@ -37,19 +37,19 @@
         "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/02C.jpg"
       ],
       "text": "We previously analyzed action 1. Now, look specifically at the current 3 frames (02A, 02B, 02C). Describe what the robot is doing in these frames, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames.",
-      "max_new_tokens": 4000
+      "max_new_tokens": 1000
     },
     {
       "id": "Description wrt task criteria-2",
       "images": [],
       "text": "Based on the criteria and the description you generated, generate analysis of what the robot is doing with respect to the task <the robot arm picks up a cup>.",
-      "max_new_tokens": 2000
+      "max_new_tokens": 500
     },
     {
       "id": "Rating-2",
       "images": [],
       "text": "From the above analyses for the action with respect to the task <the robot arm picks up a cup>, based on this rating category: <Good, Average, Bad>. How would you rate this action? Please reply with a category.",
-      "max_new_tokens": 1000
+      "max_new_tokens": 400
     },
 
 
@@ -61,19 +61,19 @@
         "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/03C.jpg"
       ],
       "text": "We previously analyzed action 1 and 2. Now, look specifically at the current 3 frames (03A, 03B, 03C). Describe what the robot is doing in these frames, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames.",
-      "max_new_tokens": 4000
+      "max_new_tokens": 1000
     },
     {
       "id": "Description wrt task criteria-3",
       "images": [],
       "text": "Based on the criteria and the description you generated, generate analysis of what the robot is doing with respect to the task <the robot arm picks up a cup>.",
-      "max_new_tokens": 2000
+      "max_new_tokens": 500
     },
     {
       "id": "Rating-3",
       "images": [],
       "text": "From the above analyses for the action with respect to the task <the robot arm picks up a cup>, based on this rating category: <Good, Average, Bad>. How would you rate this action? Please reply with a category.",
-      "max_new_tokens": 1000
+      "max_new_tokens": 400
     },
 
 
@@ -85,19 +85,19 @@
         "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/04C.jpg"
       ],
       "text": "We previously analyzed action 1, 2 and 3. Now, look specifically at the current 3 frames (04A, 04B, 04C). Describe what the robot is doing in these frames, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames.",
-      "max_new_tokens": 4000
+      "max_new_tokens": 1000
     },
     {
       "id": "Description wrt task criteria-4",
       "images": [],
       "text": "Based on the criteria and the description you generated, generate analysis of what the robot is doing with respect to the task <the robot arm picks up a cup>.",
-      "max_new_tokens": 2000
+      "max_new_tokens": 500
     },
     {
       "id": "Rating-4",
       "images": [],
       "text": "From the above analyses for the action with respect to the task <the robot arm picks up a cup>, based on this rating category: <Good, Average, Bad>. How would you rate this action? Please reply with a category.",
-      "max_new_tokens": 1000
+      "max_new_tokens": 400
     },
 
 
@@ -109,19 +109,19 @@
         "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05C.jpg"
       ],
       "text": "We previously analyzed action 1, 2, 3 and 4. Now, look specifically at the current 3 frames (05A, 05B, 05C). Describe what the robot is doing in these frames, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames.",
-      "max_new_tokens": 4000
+      "max_new_tokens": 1000
     },
     {
       "id": "Description wrt task criteria-5",
       "images": [],
       "text": "Based on the criteria and the description you generated, generate analysis of what the robot is doing with respect to the task <the robot arm picks up a cup>.",
-      "max_new_tokens": 2000
+      "max_new_tokens": 500
     },
     {
       "id": "Rating-5",
       "images": [],
       "text": "From the above analyses for the action with respect to the task <the robot arm picks up a cup>, based on this rating category: <Good, Average, Bad>. How would you rate this action? Please reply with a category.",
-      "max_new_tokens": 1000
+      "max_new_tokens": 400
     }
   ]
 }

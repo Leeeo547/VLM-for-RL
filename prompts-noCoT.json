@@ -1,0 +1,64 @@
+{
+  "prompts": [
+    {
+      "id": "Criteria",
+      "images": [],
+      "text": "You will be presented with a series of images containing a segment of the trajectory of a robot performing the task <the robot arm picks up a cup>. The trajectory segment contains 5 time steps of visual observations, each with 2 more history frames to form 5 actions with 3 frames of each action. Please first generate a set of criterias for judging the task <the robot arm picks up a cup> as different rate categories: <Good, Average, Bad>. where: Bad: The task is not completed. Average: The task is partially completed, or you believe the transition is critical for achieving the goal, such as the target object appear in the agent's view, but falls short of completion. Good: The task is completed.",
+      "max_new_tokens": 650
+    },
+    {
+      "id": "Description-1",
+      "images": [
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/01A.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/01B.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/01C.jpg"
+      ],
+      "text": "Now you are given these 3 frames representing the first action, please describe in these 3 frames, what is the robot doing with respect to the task and give a rate based on the criteria.",
+      "max_new_tokens": 1000
+    },
+
+    {
+      "id": "Description-2",
+      "images": [
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/02A.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/02B.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/02C.jpg"
+      ],
+      "text": "We previously analyzed action 1. Now, look specifically at the current 3 frames (02A, 02B, 02C). Describe what the robot is doing in these frames with respect to the task, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames. Give a rate based on the criteria.",
+      "max_new_tokens": 1000
+    },
+
+    {
+      "id": "Description-3",
+      "images": [
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/03A.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/03B.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/03C.jpg"
+      ],
+      "text": "We previously analyzed action 1 and 2. Now, look specifically at the current 3 frames (03A, 03B, 03C). Describe what the robot is doing in these frames with respect to the task, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames. Give a rate based on the criteria.",
+      "max_new_tokens": 1000
+    },
+
+    {
+      "id": "Description-4",
+      "images": [
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/04A.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/04B.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/04C.jpg"
+      ],
+      "text": "We previously analyzed action 1, 2 and 3. Now, look specifically at the current 3 frames (04A, 04B, 04C). Describe what the robot is doing in these frames with respect to the task, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames. Give a rate based on the criteria.",
+      "max_new_tokens": 1000
+    },
+
+    {
+      "id": "Description-5",
+      "images": [
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05A.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05B.jpg",
+        "/home/hliu852/VLM for RL project/VLM-for-RL/test video/mug_history/05C.jpg"
+      ],
+      "text": "We previously analyzed action 1, 2, 3 and 4. Now, look specifically at the current 3 frames (05A, 05B, 05C). Describe what the robot is doing in these frames with respect to the task, focusing on changes from the previous action. Note that all previous images are also in the context, but your task is to analyze these new frames. Give a rate based on the criteria.",
+      "max_new_tokens": 1000
+    }
+  ]
+}

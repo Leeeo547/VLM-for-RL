@@ -11,8 +11,8 @@ from qwen_vl_utils import process_vision_info
 # Configuration
 # ============================================================
 MODEL_PATH = "/home/hliu852/Qwen2.5-VL-7B-Instruct"
-PROMPTS_FILE = "prompts.json"  # Input file with your prompts
-OUTPUT_FILE = "mug-5000-whole/mug-Qwem3.json"  # Output file to store conversations
+PROMPTS_FILE = "prompts-noCoT.json"  # Input file with your prompts
+OUTPUT_FILE = "mug-5000-whole/mug-Qwen3-2B-noCoT.json"  # Output file to store conversations
 
 # ============================================================
 # Quantization Configuration for 8-bit
@@ -45,17 +45,29 @@ print(f"Using device: {device}")
 # )
 # print("Qwen2.5 VL Insturct 7B loaded successfully!\n")
 
-# We recommend enabling flash_attention_2 for better acceleration and memory saving, especially in multi-image and video scenarios.
+# # We recommend enabling flash_attention_2 for better acceleration and memory saving, especially in multi-image and video scenarios.
+# model = Qwen3VLForConditionalGeneration.from_pretrained(
+#     "Qwen/Qwen3-VL-8B-Thinking",
+#     dtype=torch.bfloat16,
+#     attn_implementation="flash_attention_2",
+#     device_map="auto",
+#     quantization_config=bnb_config
+# )
+# processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-8B-Thinking")
+
+# print("Qwen3 VL Thinking 8B loaded successfully!\n")
+
+
 model = Qwen3VLForConditionalGeneration.from_pretrained(
-    "Qwen/Qwen3-VL-8B-Thinking",
+    "Qwen/Qwen3-VL-2B-Instruct",
     dtype=torch.bfloat16,
     attn_implementation="flash_attention_2",
-    device_map="auto",
-    quantization_config=bnb_config
+    device_map="auto"
+    # quantization_config=bnb_config
 )
-processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-8B-Thinking")
+processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-2B-Instruct")
 
-print("Qwen3 VL Thinking 8B loaded successfully!\n")
+print("Qwen3 VL Instruct 2B loaded successfully!\n")
 
 
 # ============================================================
@@ -121,7 +133,8 @@ def query_model(messages, max_new_tokens=256):
     text = processor.apply_chat_template(
         messages, 
         tokenize=False, 
-        add_generation_prompt=True
+        add_generation_prompt=True,
+        enabling_thinking=False
     )
     image_inputs, video_inputs = process_vision_info(messages)
     
@@ -315,16 +328,18 @@ if __name__ == "__main__":
     print("2. Independent (each prompt is separate)")
     mode = input("Enter mode (1 or 2, default=1): ").strip() or "1"
     
-    # --- Start of Change (Add overall timer) ---
-    overall_start_time = time.perf_counter()
-    # --- End of Change ---
+    # # --- Start of Change (Add overall timer) ---
+    # overall_start_time = time.perf_counter()
+    # # --- End of Change ---
 
     if mode == "1":
         # Process prompts in sequence (conversation context maintained)
+        overall_start_time = time.perf_counter()
         conversation = process_prompts_sequence(prompts)
         save_conversation(conversation, OUTPUT_FILE)
     else:
         # Process prompts independently
+        overall_start_time = time.perf_counter()
         conversations = process_independent_prompts(prompts)
         
         # Save all independent conversations
