@@ -61,6 +61,6 @@ def extract_frames(video_path, output_dir, num_frames=10):
 
 # 示例用法
 if __name__ == "__main__":
-    video_path = "episode_000001.mp4"  # 替换为你的视频文件路径
-    output_dir = "pickup"    # 替换为你想保存帧的目录
+    video_path = "mug.mp4"  # 替换为你的视频文件路径
+    output_dir = "mug_10"    # 替换为你想保存帧的目录
     extract_frames(video_path, output_dir, num_frames=10)

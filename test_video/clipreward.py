@@ -1,0 +1,124 @@
+import torch
+from typing import List, Tuple
+from PIL import Image
+from transformers import CLIPProcessor, CLIPModel
+
+
+class CLIPRewardModel:
+    def __init__(
+        self,
+        model_name: str = "openai/clip-vit-base-patch32",
+        device: str = None,
+    ):
+        """
+        Reward model that uses a pre-trained CLIP model to compute
+        cosine similarity between a text description and multiple frames.
+
+        Args:
+            model_name: Hugging Face model id for CLIP.
+            device: "cuda", "cpu", or None (auto-detect).
+        """
+        if device is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = device
+
+        # Load model + processor
+        self.model = CLIPModel.from_pretrained(model_name)
+        self.processor = CLIPProcessor.from_pretrained(model_name)
+
+        self.model.to(self.device)
+        self.model.eval()
+
+    @torch.no_grad()
+    def compute_frame_scores(
+        self,
+        images: List[Image.Image],
+        text: str,
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Compute cosine similarity between each image frame and the text description.
+
+        Args:
+            images: list of PIL images (e.g., 10 frames from one rollout).
+            text: a single string describing the task.
+
+        Returns:
+            frame_scores: tensor of shape (num_frames,)
+                          cosine similarity for each frame.
+            video_score: scalar tensor, mean of frame_scores.
+        """
+        if len(images) == 0:
+            raise ValueError("images list is empty")
+
+        # Prepare inputs: same text for all images
+        texts = [text]  # single text; CLIP will broadcast appropriately
+
+        inputs = self.processor(
+            text=texts,
+            images=images,
+            return_tensors="pt",
+            padding=True,
+        )
+
+        # Move tensors to device
+        pixel_values = inputs["pixel_values"].to(self.device)     # (num_frames, 3, H, W)
+        input_ids = inputs["input_ids"].to(self.device)           # (1, seq_len)
+        attention_mask = inputs["attention_mask"].to(self.device) # (1, seq_len)
+
+        # Get embeddings
+        # Option 1: use model.get_*_features (slightly cleaner)
+        image_embeds = self.model.get_image_features(pixel_values=pixel_values)       # (num_frames, D)
+        text_embeds = self.model.get_text_features(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+        )  # (1, D)
+
+        # Normalize to unit vectors (cosine similarity via dot product)
+        image_embeds = image_embeds / image_embeds.norm(dim=-1, keepdim=True)
+        text_embeds = text_embeds / text_embeds.norm(dim=-1, keepdim=True)
+
+        # Compute cosine similarity for each frame:
+        # (num_frames, D) @ (D, 1) -> (num_frames, 1) -> squeeze -> (num_frames,)
+        frame_scores = (image_embeds @ text_embeds.T).squeeze(-1)
+
+        # Simple temporal aggregation: mean over frames
+        video_score = frame_scores.mean()
+
+        return frame_scores, video_score
+
+
+# -------------------------------------------------------------------------
+# Example usage (you can delete or adapt this part in your codebase)
+# -------------------------------------------------------------------------
+if __name__ == "__main__":
+    from PIL import Image
+    import os
+
+    # Folder containing your frames
+    frame_dir = "mug_10"
+
+    # Explicitly build the 10 frame paths: potato_000.jpg ... potato_009.jpg
+    frame_paths = [
+        os.path.join(frame_dir, f"potato_{i:03d}.jpg")
+        for i in range(10)
+    ]
+
+    # Load frames as RGB images
+    frames = [Image.open(p).convert("RGB") for p in frame_paths]
+
+    task_description = "a robot moving a potato"  # change to your actual task text
+
+    reward_model = CLIPRewardModel(
+        model_name="openai/clip-vit-base-patch32",
+        device="cuda",  # or "cpu" if no GPU
+    )
+
+    frame_scores, video_score = reward_model.compute_frame_scores(
+        images=frames,
+        text=task_description,
+    )
+
+    print("Frame paths:", frame_paths)
+    print("Per-frame cosine similarities:", frame_scores.cpu().tolist())
+    print("Aggregated video score:", float(video_score.cpu()))
+
